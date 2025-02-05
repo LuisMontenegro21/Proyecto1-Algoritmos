@@ -1,0 +1,34 @@
+q_states:
+  q_list:
+
+  initial:
+  final: 
+
+alphabet:
+
+tape_alphabet:
+
+# instructions for transitions
+delta:
+
+- params:
+    initial_state:
+    mem_cache_value:
+    tape_input:
+
+  output:
+    final_state:
+    mem_cache_value:
+    tape_output:
+    tape_displacement:
+
+- params:
+    initial_state:
+    mem_cache_value:
+    tape_input:
+  output:
+    final_state:
+    mem_cache_value:
+    tape_output:
+# ...
+# add for next instructions, each for an state 
