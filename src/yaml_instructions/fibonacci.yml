@@ -1,25 +1,32 @@
 q_states:
   q_list:
-
-  initial:
+  - '0'
+  - '1'
+  - '2'
+  initial: '0 '
   final: 
 
 alphabet:
-
+- '0'
+- '1'
+# None will be used as blank , later replaced with B
 tape_alphabet:
-
+- '0'
+- '1'
+- 'x'
+- 
 # instructions for transitions
 delta:
 
 - params:
-    initial_state:
-    mem_cache_value:
+    initial_state: '0'
+    mem_cache_value: 
     tape_input:
 
   output:
-    final_state:
+    final_state: '0'
     mem_cache_value:
-    tape_output:
+    tape_output: '0'
     tape_displacement:
 
 - params:
