@@ -22,7 +22,9 @@ def convert_to_array(w: str, binary_encoding: bool=False) -> np.ndarray:
         raise TypeError(f"TypeError: {w} must be type 'str', {type(w)} found instead")
 
     if binary_encoding and w.isdigit():
+        w: int = int(w)
         binary: str = format(w, 'b') # transform to binary str
+        print(f"Binary {binary}\n")
         chain_null : list = [None] + list(binary) + [None] # add null to both ends
         return np.array(chain_null) # return a np.ndarray of the binary
     else:
@@ -101,7 +103,7 @@ def print_instant_production(state: int, tape: np.ndarray, position: int):
     '''
     print instant productions 
     '''
-    tape: np.ndarray = np.array(['B' if symbol is None else symbol for symbol in tape]) # replace None instances for Blank
-    tape[position] = f'[{state}, {tape[position]}]' # change the current position for the state and position it is
+    tape: np.ndarray = np.array(['B' if symbol is None else symbol for symbol in tape], dtype=object) # replace None instances for Blank
+    tape[position] = f'[S_{state}, {tape[position]}]' # change the current position for the state and position it is
     tape_content: str = ''.join(str(symbol) for symbol in tape) # join the symbols found in the current array
     print(f"\t{tape_content}") # print content currently in the tape
