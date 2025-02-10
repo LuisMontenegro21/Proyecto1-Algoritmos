@@ -50,7 +50,7 @@ delta:
 - params:
     initial_state: '0'
     mem_cache_value: 
-    tape_input: '0'
+    tape_input: '1'
 
   output:
     final_state: '0'
@@ -106,11 +106,11 @@ delta:
 - params:
     initial_state: '0'
     mem_cache_value:
-    tape_input: '1'
+    tape_input: 'p'
   output:
     final_state: '3'
     mem_cache_value:
-    tape_output: '1'
+    tape_output: 'p'
     tape_displacement: 'S'
 
 # ...

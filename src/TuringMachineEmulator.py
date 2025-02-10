@@ -13,7 +13,7 @@ def read_yaml(file_path: str):
         except yaml.YAMLError as exception:
             raise exception
         
-def convert_to_array(w: str, binary_encoding: bool=False) -> np.ndarray:
+def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool = False) -> np.ndarray:
     '''
     converts the chain to list and returns it as np.ndarray.
     optionally codifies the input chain to binary
@@ -27,6 +27,12 @@ def convert_to_array(w: str, binary_encoding: bool=False) -> np.ndarray:
         print(f"Binary {binary}\n")
         chain_null : list = [None] + list(binary) + [None] # add null to both ends
         return np.array(chain_null) # return a np.ndarray of the binary
+    
+    elif unary_encoding and w.isdigit():
+        w: int = int(w)
+        unary: list = [0 for _ in range(w)] # fill array with 0
+        return np.array(unary)
+
     else:
         chain_null: list = [None] + list(w) + [None] # if no binary needed, return as a np.ndarray
         return np.array(chain_null)
@@ -80,7 +86,7 @@ def iterate(delta: dict , tape: np.ndarray, initial_poisition: int) -> tuple[np.
         elif transition['output']['tape_displacement'] == 'L':
             position -= 1
         elif transition['output']['tape_displacement'] == 'S':
-            position = position # continue
+            pass # position = position
 
         current_state = transition['output']['final_state']
         # print the production after updating the current state 
@@ -95,9 +101,9 @@ def is_accepted(w: str, tape: np.ndarray, final_state: int, halt_state: int):
     '''
     chain_concatenated : str = ''.join([i if i is not None else '' for i in tape])
     if final_state == halt_state:
-        print(f"Input chain '{w}' was accepted by the TM with result:\n{chain_concatenated}")
+        print(f"\nInput chain '{w}' was accepted by the TM with result:\n{chain_concatenated}")
     else:
-        print(f"Input chain '{w}' was rejected by the TM with result:\n{chain_concatenated}")
+        print(f"\nInput chain '{w}' was rejected by the TM with result:\n{chain_concatenated}")
 
 def print_instant_production(state: int, tape: np.ndarray, position: int):
     '''
