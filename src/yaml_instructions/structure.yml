@@ -1,0 +1,225 @@
+q_states:
+  q_list:
+  - '0'
+  - '1'
+  - '2'
+  - '3'
+  - '4'
+  - '5'
+  initial: '0'
+  final: '5'
+
+alphabet:
+- 'a'
+- 'b'
+- 'c'
+# el - __ representa el blank, en este caso None
+tape_alphabet:
+- 'a'
+- 'b'
+- 'c'
+- 
+
+# instrucciones para las transiciones
+delta:
+
+# en caso lea un Blank en el estado q0
+- params:
+    initial_state: '0'
+    mem_cache_value:
+    tape_input: 
+  output:
+    final_state: '0'
+    mem_cache_value: 
+    tape_output: 
+    tape_displacement: 'R'
+
+# en caso lea un a en estado q0
+- params:
+    initial_state: '0'
+    mem_cache_value:
+    tape_input: 'a'
+  output:
+    final_state: '1'
+    mem_cache_value: 
+    tape_output: 'x'
+    tape_displacement: 'R'
+
+# en caso lea una y en estado q0
+- params:
+    initial_state: '0'
+    mem_cache_value:
+    tape_input: 'y'
+  output:
+    final_state: '4'
+    mem_cache_value: 
+    tape_output: 'y'
+    tape_displacement: 'R'
+
+# en caso lea una a en estado q1
+- params:
+    initial_state: '1'
+    mem_cache_value:
+    tape_input: 'a'
+  output:
+    final_state: '1'
+    mem_cache_value: 
+    tape_output: 'a'
+    tape_displacement: 'R'
+
+# en caso lea una y en estado q1
+- params:
+    initial_state: '1'
+    mem_cache_value:
+    tape_input: 'y'
+  output:
+    final_state: '1'
+    mem_cache_value: 
+    tape_output: 'y'
+    tape_displacement: 'R'
+
+# en caso lea una b en estado q1
+- params:
+    initial_state: '1'
+    mem_cache_value:
+    tape_input: 'b'
+  output:
+    final_state: '2'
+    mem_cache_value: 
+    tape_output: 'y'
+    tape_displacement: 'R'  
+
+# en caso lea una b en estado q2
+- params:
+    initial_state: '2'
+    mem_cache_value:
+    tape_input: 'b'
+  output:
+    final_state: '2'
+    mem_cache_value: 
+    tape_output: 'b'
+    tape_displacement: 'R' 
+
+# en caso lea una z en estado q2
+- params:
+    initial_state: '2'
+    mem_cache_value:
+    tape_input: 'z'
+  output:
+    final_state: '2'
+    mem_cache_value: 
+    tape_output: 'z'
+    tape_displacement: 'R' 
+
+# en caso lea una c en estado q2
+- params:
+    initial_state: '2'
+    mem_cache_value:
+    tape_input: 'c'
+  output:
+    final_state: '3'
+    mem_cache_value: 
+    tape_output: 'z'
+    tape_displacement: 'L'
+  
+# en caso lea una z en estado q3
+- params:
+    initial_state: '3'
+    mem_cache_value:
+    tape_input: 'z'
+  output:
+    final_state: '3'
+    mem_cache_value: 
+    tape_output: 'z'
+    tape_displacement: 'L'
+
+# en caso lea una b en estado q3
+- params:
+    initial_state: '3'
+    mem_cache_value:
+    tape_input: 'b'
+  output:
+    final_state: '3'
+    mem_cache_value: 
+    tape_output: 'b'
+    tape_displacement: 'L'
+
+# en caso lea una y en estado q3
+- params:
+    initial_state: '3'
+    mem_cache_value:
+    tape_input: 'y'
+  output:
+    final_state: '3'
+    mem_cache_value: 
+    tape_output: 'y'
+    tape_displacement: 'L'
+
+# en caso lea una a en estado q3
+- params:
+    initial_state: '3'
+    mem_cache_value:
+    tape_input: 'a'
+  output:
+    final_state: '3'
+    mem_cache_value: 
+    tape_output: 'a'
+    tape_displacement: 'L'
+  
+# en caso lea una x en estado q3
+- params:
+    initial_state: '3'
+    mem_cache_value:
+    tape_input: 'x'
+  output:
+    final_state: '0'
+    mem_cache_value: 
+    tape_output: 'x'
+    tape_displacement: 'R'
+
+# en caso lea una y en estado q4
+- params:
+    initial_state: '4'
+    mem_cache_value:
+    tape_input: 'y'
+  output:
+    final_state: '4'
+    mem_cache_value: 
+    tape_output: 'y'
+    tape_displacement: 'R'
+
+# en caso lea una z en estado q4
+- params:
+    initial_state: '4'
+    mem_cache_value:
+    tape_input: 'z'
+  output:
+    final_state: '4'
+    mem_cache_value: 
+    tape_output: 'z'
+    tape_displacement: 'R'
+
+# en caso lea un blank en estado q4
+# lleva al estado de aceptación
+- params:
+    initial_state: '4'
+    mem_cache_value:
+    tape_input: 
+  output:
+    final_state: '5'
+    mem_cache_value: 
+    tape_output: 
+    tape_displacement: 'S'
+
+binary_cod:
+  binary: 'n'
+
+simulation_strings:
+# aceptados
+- abc
+- aabbcc
+- aaabbbcc
+# no aceptados
+- aabc
+- abbcc
+- abbccc
