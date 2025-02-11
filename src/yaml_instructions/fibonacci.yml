@@ -12,11 +12,13 @@ alphabet:
 - '1'
 # None will be used as blank , later replaced with B
 # p means F(n-1) and a means F(n-2)
+# x is used to count how many times a process is done
 tape_alphabet:
 - '0'
 - '1'
 - 'p'
 - 'a'
+- '#'
 - 'x'
 - 
 # instructions for transitions
@@ -29,89 +31,45 @@ delta:
     tape_input: 
 
   output:
-    final_state: '1'
-    mem_cache_value:
-    tape_output: 'p'
-    tape_displacement: 'R'
-
-
-- params:
-    initial_state: '0'
-    mem_cache_value: 
-    tape_input: '0'
-
-  output:
-    final_state: '0'
-    mem_cache_value:
-    tape_output: '0'
-    tape_displacement: 'L'
-
-
-- params:
-    initial_state: '0'
-    mem_cache_value: 
-    tape_input: '1'
-
-  output:
-    final_state: '0'
-    mem_cache_value:
-    tape_output: '1'
-    tape_displacement: 'L'
-
-- params:
-    initial_state: '0'
-    mem_cache_value: 
-    tape_input: 'p'
-
-  output:
     final_state: '0'
     mem_cache_value:
     tape_output: 'p'
     tape_displacement: 'L'
 
-# if it finds 0, keep moving and remain unchanged
 - params:
-    initial_state: '1'
-    mem_cache_value:
-    tape_input: '0'
-  output:
-    final_state: '1'
-    mem_cache_value:
-    tape_output: '0'
-    tape_displacement: 'R'
-
-# if it finds 1, keep moving and remain unchanged
-- params:
-    initial_state: '1'
-    mem_cache_value:
-    tape_input: '1'
-  output:
-    final_state: '1'
-    mem_cache_value:
-    tape_output: '1'
-    tape_displacement: 'R'
-
-# if it finds 1, keep moving and remain unchanged
-- params:
-    initial_state: '1'
-    mem_cache_value:
+    initial_state: '0'
+    mem_cache_value: 
     tape_input: 
+
   output:
-    final_state: '0'
+    final_state: '1'
     mem_cache_value:
-    tape_output: 'x'
+    tape_output: '1'
     tape_displacement: 'L'
 
 
 - params:
-    initial_state: '0'
-    mem_cache_value:
-    tape_input: 'p'
+    initial_state: '1'
+    mem_cache_value: 
+    tape_input: 
+
   output:
-    final_state: '3'
+    final_state: '1'
     mem_cache_value:
-    tape_output: 'p'
-    tape_displacement: 'S'
+    tape_output: 'a'
+    tape_displacement: 'L'
+
+
+- params:
+    initial_state: '1'
+    mem_cache_value: 
+    tape_input: 
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'L'
 
 # ...
 # add for next instructions, each for an state 

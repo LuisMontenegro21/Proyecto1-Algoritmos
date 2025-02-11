@@ -24,7 +24,7 @@ def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool =
     if binary_encoding and w.isdigit():
         w: int = int(w)
         binary: str = format(w, 'b') # transform to binary str
-        print(f"Binary {binary}\n")
+        print(f"Binary: {binary}\n")
         chain_null : list = [None] + list(binary) + [None] # add null to both ends
         return np.array(chain_null) # return a np.ndarray of the binary
     
@@ -41,7 +41,7 @@ def select_turing_yaml(file_path: str, w: str) -> tuple[np.ndarray, dict]:
     '''
     Selects which yaml to use and checks if it needs a binary codification or not
     '''
-    instructions: dict = read_yaml(file_path=file_path)
+    instructions: dict = read_yaml(file_path=file_path) 
     if instructions['binary_cod']['binary'] == 'y':
         arr: np.ndarray = convert_to_array(w=w, binary_encoding=True) # if Fibonacci, needs to be encoded 
         return arr, instructions
@@ -113,3 +113,9 @@ def print_instant_production(state: int, tape: np.ndarray, position: int):
     tape[position] = f'[S_{state}, {tape[position]}]' # change the current position for the state and position it is
     tape_content: str = ''.join(str(symbol) for symbol in tape) # join the symbols found in the current array
     print(f"\t{tape_content}") # print content currently in the tape
+
+def to_base_10(n: int):
+    '''
+    returns binary back to base 10
+    '''
+    return int(n, 2)
