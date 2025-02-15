@@ -211,8 +211,7 @@ delta:
     tape_output: 
     tape_displacement: 'S'
 
-binary_cod:
-  binary: 'n'
+
 
 simulation_strings:
 # aceptados

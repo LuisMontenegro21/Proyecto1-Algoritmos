@@ -24,7 +24,9 @@ tape_alphabet:
 # instructions for transitions
 delta:
 
-# first case, starts blank and places a 'p', moves right
+# First states are for setting up the tape
+# 
+# 
 - params:
     initial_state: '0'
     mem_cache_value: 
@@ -36,40 +38,6 @@ delta:
     tape_output: 'p'
     tape_displacement: 'L'
 
-- params:
-    initial_state: '0'
-    mem_cache_value: 
-    tape_input: 
-
-  output:
-    final_state: '1'
-    mem_cache_value:
-    tape_output: '1'
-    tape_displacement: 'L'
-
-
-- params:
-    initial_state: '1'
-    mem_cache_value: 
-    tape_input: 
-
-  output:
-    final_state: '1'
-    mem_cache_value:
-    tape_output: 'a'
-    tape_displacement: 'L'
-
-
-- params:
-    initial_state: '1'
-    mem_cache_value: 
-    tape_input: 
-
-  output:
-    final_state: '1'
-    mem_cache_value:
-    tape_output: '1'
-    tape_displacement: 'L'
 
 # ...
 # add for next instructions, each for an state 
@@ -77,3 +45,13 @@ delta:
 # to check binary codification: y / n
 binary_cod:
   binary : 'y'
+
+
+simulation_strings:
+- 
+- 
+- 
+- 
+- 
+- 
+- 

@@ -1,5 +1,6 @@
 import yaml
 import numpy as np
+import time
 
 def read_yaml(file_path: str):
     '''
@@ -37,17 +38,21 @@ def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool =
         chain_null: list = [None] + list(w) + [None] # if no binary needed, return as a np.ndarray
         return np.array(chain_null)
   
-def select_turing_yaml(file_path: str, w: str) -> tuple[np.ndarray, dict]:
+def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False) -> None:
     '''
     Selects which yaml to use and checks if it needs a binary codification or not
     '''
     instructions: dict = read_yaml(file_path=file_path) 
-    if instructions['binary_cod']['binary'] == 'y':
+    binary_code: str = instructions.get('binary_cod', {}).get('binary', 'n') # check if has binary code, else, do not pass to binary
+
+    if binary_code == 'y':
         arr: np.ndarray = convert_to_array(w=w, binary_encoding=True) # if Fibonacci, needs to be encoded 
-        return arr, instructions
+        traverse_tape(w=w, tape=arr, position=0, instructions=instructions )
+        
     else:
         arr: np.ndarray = convert_to_array(w=w) # if Fibonacci, needs to be encoded 
-        return arr, instructions
+        traverse_tape(w=w, tape=arr, position=0, instructions=instructions )
+        
 
 
 def traverse_tape(w: str, tape: np.ndarray, position: int, instructions: dict) -> None:
@@ -56,12 +61,14 @@ def traverse_tape(w: str, tape: np.ndarray, position: int, instructions: dict) -
     delta_dict = {} # gather only the transitions
     for index, entry in enumerate(instructions['delta']):
         delta_dict[index] = {'params': entry['params'], 'output': entry['output']}
-    
+    initial_time: float = set_time()
     final_tape, final_tape_state = iterate(delta=delta_dict, tape=tape, initial_poisition=position)
-    is_accepted(w=w, tape=final_tape, final_state=final_tape_state, halt_state=halt_state)
+    final_time: float = set_time()
+    time_execution: float = get_time(initial_time=initial_time, final_time=final_time)
+    is_accepted(w=w, tape=final_tape, final_state=final_tape_state, halt_state=halt_state, execution_time=time_execution)
 
 
-def iterate(delta: dict , tape: np.ndarray, initial_poisition: int) -> tuple[np.ndarray, int]:
+def iterate(delta: dict , tape: np.ndarray, initial_poisition: int, avoid_printing: bool=False) -> tuple[np.ndarray, int]:
     position: int = initial_poisition # define initial position
     current_state = delta[0]['params']['initial_state'] # define initial state
     while True:
@@ -89,21 +96,28 @@ def iterate(delta: dict , tape: np.ndarray, initial_poisition: int) -> tuple[np.
             pass # position = position
 
         current_state = transition['output']['final_state']
-        # print the production after updating the current state 
-        print_instant_production(state=current_state, tape=tape, position=position)
+        # print the production after updating the current state
+        if not avoid_printing:
+            print_instant_production(state=current_state, tape=tape, position=position)
     
     return tape, current_state
 
 
-def is_accepted(w: str, tape: np.ndarray, final_state: int, halt_state: int):
+def is_accepted(w: str, tape: np.ndarray, final_state: int, halt_state: int, execution_time:float=None):
     '''
     prints if the chain was accepted or not by the Turing Machine 
     '''
     chain_concatenated : str = ''.join([i if i is not None else '' for i in tape])
     if final_state == halt_state:
-        print(f"\nInput chain '{w}' was accepted by the TM with result:\n{chain_concatenated}")
+        if execution_time:
+            print(f"\nInput chain '{w}' was accepted by the TM with result: {chain_concatenated}\nwith time: {execution_time}")
+        else:
+            print(f"\nInput chain '{w}' was accepted by the TM with result: {chain_concatenated}")
     else:
-        print(f"\nInput chain '{w}' was rejected by the TM with result:\n{chain_concatenated}")
+        if execution_time:
+            print(f"\nInput chain '{w}' was rejected by the TM with result: {chain_concatenated}\nwith time: {execution_time}")
+        else:
+            print(f"\nInput chain '{w}' was rejected by the TM with result: {chain_concatenated}")
 
 def print_instant_production(state: int, tape: np.ndarray, position: int):
     '''
@@ -114,8 +128,20 @@ def print_instant_production(state: int, tape: np.ndarray, position: int):
     tape_content: str = ''.join(str(symbol) for symbol in tape) # join the symbols found in the current array
     print(f"\t{tape_content}") # print content currently in the tape
 
+# check if even necessary
 def to_base_10(n: int):
     '''
     returns binary back to base 10
     '''
     return int(n, 2)
+
+def set_time() -> float:
+    return time.time()
+
+def get_time(initial_time: float, final_time: float) -> float:
+    return final_time - initial_time 
+
+
+#TODO this function will work to simulate many strings to later be passed for plotting with results being a 2D array with [<chain>, <time>] format.
+def simulate_multiple_chains():
+    raise NotImplementedError()
