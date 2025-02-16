@@ -1,6 +1,7 @@
 import yaml
 import numpy as np
 import time
+from plotting import plot_results
 
 def read_yaml(file_path: str):
     '''
@@ -44,31 +45,40 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
     '''
     instructions: dict = read_yaml(file_path=file_path) 
     binary_code: str = instructions.get('binary_cod', {}).get('binary', 'n') # check if has binary code, else, do not pass to binary
+    results_arr: np.ndarray
 
     if binary_code == 'y':
         arr: np.ndarray = convert_to_array(w=w, binary_encoding=True) # if Fibonacci, needs to be encoded 
-        traverse_tape(w=w, tape=arr, position=0, instructions=instructions )
+        if multiple_input_chains:
+            results_arr = simulate_multiple_chains(position=0, instructions=instructions)
+            #plot_results(results_arr)
+        else:
+            traverse_tape(w=w, tape=arr, position=0, instructions=instructions)
         
     else:
         arr: np.ndarray = convert_to_array(w=w) # if Fibonacci, needs to be encoded 
-        traverse_tape(w=w, tape=arr, position=0, instructions=instructions )
-        
+        if multiple_input_chains:
+            results_arr = simulate_multiple_chains(position=0, instructions=instructions)
+            #plot_results(results_arr)
+        else:
+            traverse_tape(w=w, tape=arr, position=0, instructions=instructions)
+   
 
-
-def traverse_tape(w: str, tape: np.ndarray, position: int, instructions: dict) -> None:
+def traverse_tape(w: str, tape: np.ndarray, position: int, instructions: dict, avoid_printing:bool=False) -> float:
     halt_state = instructions['q_states']['final'] # get the final state
 
     delta_dict = {} # gather only the transitions
     for index, entry in enumerate(instructions['delta']):
         delta_dict[index] = {'params': entry['params'], 'output': entry['output']}
     initial_time: float = set_time()
-    final_tape, final_tape_state = iterate(delta=delta_dict, tape=tape, initial_poisition=position)
+    final_tape, final_tape_state = iterate(delta=delta_dict, tape=tape, initial_poisition=position, avoid_printing=avoid_printing)
     final_time: float = set_time()
     time_execution: float = get_time(initial_time=initial_time, final_time=final_time)
     is_accepted(w=w, tape=final_tape, final_state=final_tape_state, halt_state=halt_state, execution_time=time_execution)
+    return time_execution
 
 
-def iterate(delta: dict , tape: np.ndarray, initial_poisition: int, avoid_printing: bool=False) -> tuple[np.ndarray, int]:
+def iterate(delta: dict , tape: np.ndarray, initial_poisition: int, avoid_printing: bool) -> tuple[np.ndarray, int]:
     position: int = initial_poisition # define initial position
     current_state = delta[0]['params']['initial_state'] # define initial state
     while True:
@@ -109,13 +119,13 @@ def is_accepted(w: str, tape: np.ndarray, final_state: int, halt_state: int, exe
     '''
     chain_concatenated : str = ''.join([i if i is not None else '' for i in tape])
     if final_state == halt_state:
-        if execution_time:
-            print(f"\nInput chain '{w}' was accepted by the TM with result: {chain_concatenated}\nwith time: {execution_time}")
+        if execution_time >= 0:
+            print(f"\nInput chain '{w}' was accepted by the TM with result: {chain_concatenated}\ntime: {execution_time}")
         else:
             print(f"\nInput chain '{w}' was accepted by the TM with result: {chain_concatenated}")
-    else:
-        if execution_time:
-            print(f"\nInput chain '{w}' was rejected by the TM with result: {chain_concatenated}\nwith time: {execution_time}")
+    else:   
+        if execution_time >= 0:
+            print(f"\nInput chain '{w}' was rejected by the TM with result: {chain_concatenated}\ntime: {execution_time}")
         else:
             print(f"\nInput chain '{w}' was rejected by the TM with result: {chain_concatenated}")
 
@@ -136,12 +146,23 @@ def to_base_10(n: int):
     return int(n, 2)
 
 def set_time() -> float:
-    return time.time()
+    '''Sets time'''
+    return time.perf_counter()
 
 def get_time(initial_time: float, final_time: float) -> float:
+    '''Returns difference between times'''
     return final_time - initial_time 
 
 
-#TODO this function will work to simulate many strings to later be passed for plotting with results being a 2D array with [<chain>, <time>] format.
-def simulate_multiple_chains():
-    raise NotImplementedError()
+def simulate_multiple_chains(position: int, instructions: dict) -> np.ndarray:
+    '''
+    this function simulates many strings to later be passed for plotting with results being a 2D array with [<chain>, <time>] format.
+    '''
+    time_result: float = 0.0
+    time_exc_arr:np.ndarray = np.array([], dtype=object)
+    simulation_strings: list = instructions.get('simulation_strings', [])
+    for string in simulation_strings:
+        tape: np.ndarray = convert_to_array(w=string, binary_encoding=True)
+        time_result = traverse_tape(w=string, tape=tape, position=position, instructions=instructions, avoid_printing=True)
+        time_exc_arr = np.append(time_exc_arr, [string , time_result], axis=0) # odd numbers are time execution, even are the chain
+    return time_exc_arr

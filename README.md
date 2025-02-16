@@ -13,4 +13,6 @@ You may need to install the following libraries for it to work using pip
 ```bash
 pip install numpy==2.1.3
 pip install matplotlib==3.10.0
+pip install pandas==2.2.3
+pip install seaborn==0.13.2
 ```

@@ -214,11 +214,5 @@ delta:
 
 
 simulation_strings:
-# aceptados
+- aaaaabbbbbccccc
 - abc
-- aabbcc
-- aaabbbcc
-# no aceptados
-- aabc
-- abbcc
-- abbccc
