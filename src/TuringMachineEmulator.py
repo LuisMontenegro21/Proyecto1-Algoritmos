@@ -32,7 +32,8 @@ def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool =
     
     elif unary_encoding and w.isdigit():
         w: int = int(w)
-        unary: list = [0 for _ in range(w)] # fill array with 0
+        unary: list = ['|' for _ in range(w)] # fill array with |
+        chain: list = ['1', '#', '1'] + unary # add starting case 
         return np.array(unary)
 
     else:
@@ -48,48 +49,52 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
     results_arr: np.ndarray
 
     if binary_code == 'y':
-        arr: np.ndarray = convert_to_array(w=w, binary_encoding=True) # if Fibonacci, needs to be encoded 
+        arr: np.ndarray = convert_to_array(w=w, unary_encoding=True) # if Fibonacci, needs to be encoded 
         if multiple_input_chains:
             results_arr = simulate_multiple_chains(position=0, instructions=instructions)
             #plot_results(results_arr)
         else:
-            traverse_tape(w=w, tape=arr, position=0, instructions=instructions)
+            traverse_tape(w=w, tape=arr, position=0, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
+
         
     else:
-        arr: np.ndarray = convert_to_array(w=w) # if Fibonacci, needs to be encoded 
+        arr: np.ndarray = convert_to_array(w=w) 
         if multiple_input_chains:
             results_arr = simulate_multiple_chains(position=0, instructions=instructions)
             #plot_results(results_arr)
         else:
-            traverse_tape(w=w, tape=arr, position=0, instructions=instructions)
+            traverse_tape(w=w, tape=arr, position=0, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
    
 
-def traverse_tape(w: str, tape: np.ndarray, position: int, instructions: dict, avoid_printing:bool=False) -> float:
-    halt_state = instructions['q_states']['final'] # get the final state
+def get_transition_map(instructions: dict) -> dict:
+    '''Gathers only the delta transitions of the function
+        Keys are tuples (state, input), values are the corresponding transitions
+    '''
+    transition_map = {
+        (entry['params']['initial_state'], entry['params']['tape_input']): {
+            'params': entry['params'],
+            'output': entry['output']
+        }
+        for entry in instructions['delta']
+    }
+    return transition_map
 
-    delta_dict = {} # gather only the transitions
-    for index, entry in enumerate(instructions['delta']):
-        delta_dict[index] = {'params': entry['params'], 'output': entry['output']}
+def traverse_tape(w: str, tape: np.ndarray, position: int, instructions: dict, delta_dict:dict, avoid_printing:bool=False) -> float:
+    halt_state = instructions['q_states']['final'] # get the final state
     initial_time: float = set_time()
-    final_tape, final_tape_state = iterate(delta=delta_dict, tape=tape, initial_poisition=position, avoid_printing=avoid_printing)
+    final_tape, final_tape_state = iterate(transition_map=delta_dict, tape=tape, initial_poisition=position, initial_state=instructions['q_states']['initial'], avoid_printing=avoid_printing) 
     final_time: float = set_time()
     time_execution: float = get_time(initial_time=initial_time, final_time=final_time)
     is_accepted(w=w, tape=final_tape, final_state=final_tape_state, halt_state=halt_state, execution_time=time_execution)
     return time_execution
 
 
-def iterate(delta: dict , tape: np.ndarray, initial_poisition: int, avoid_printing: bool) -> tuple[np.ndarray, int]:
+def iterate(transition_map: dict , tape: np.ndarray, initial_poisition: int, initial_state: int, avoid_printing: bool) -> tuple[np.ndarray, int]:
     position: int = initial_poisition # define initial position
-    current_state = delta[0]['params']['initial_state'] # define initial state
+    current_state: int = initial_state # define initial state
     while True:
         current_symbol = tape[position] if position < len(tape) else None
-        transition = None
-        # search for appropiate transition 
-        for key, value in delta.items():
-            if value['params']['initial_state'] == current_state and value['params']['tape_input'] == current_symbol:
-                transition = value
-                break
-        # if no transition found, break
+        transition = transition_map.get((current_state, current_symbol))
         if transition is None:
             break
         
@@ -138,12 +143,6 @@ def print_instant_production(state: int, tape: np.ndarray, position: int):
     tape_content: str = ''.join(str(symbol) for symbol in tape) # join the symbols found in the current array
     print(f"\t{tape_content}") # print content currently in the tape
 
-# check if even necessary
-def to_base_10(n: int):
-    '''
-    returns binary back to base 10
-    '''
-    return int(n, 2)
 
 def set_time() -> float:
     '''Sets time'''
@@ -161,8 +160,9 @@ def simulate_multiple_chains(position: int, instructions: dict) -> np.ndarray:
     time_result: float = 0.0
     time_exc_arr:np.ndarray = np.array([], dtype=object)
     simulation_strings: list = instructions.get('simulation_strings', [])
+    delta_dict: dict = get_transition_map(instructions=instructions) # get delta instructions before hand 
     for string in simulation_strings:
         tape: np.ndarray = convert_to_array(w=string, binary_encoding=True)
-        time_result = traverse_tape(w=string, tape=tape, position=position, instructions=instructions, avoid_printing=True)
+        time_result = traverse_tape(w=string, tape=tape, position=position, instructions=instructions, delta_dict=delta_dict, avoid_printing=True)
         time_exc_arr = np.append(time_exc_arr, [string , time_result], axis=0) # odd numbers are time execution, even are the chain
     return time_exc_arr
