@@ -25,16 +25,16 @@ def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool =
 
     if binary_encoding and w.isdigit():
         w: int = int(w)
-        binary: str = format(w, 'b') # transform to binary str
+        binary: int = format(w, 'b') # transform to binary str
         print(f"Binary: {binary}\n")
-        chain_null : list = [None] + list(binary) + [None] # add null to both ends
+        chain_null : list = list(binary) + [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None] # add null to both ends
         return np.array(chain_null) # return a np.ndarray of the binary
     
     elif unary_encoding and w.isdigit():
         w: int = int(w)
         unary: list = ['|' for _ in range(w)] # fill array with |
         chain: list = ['1', '#', '1'] + unary # add starting case 
-        return np.array(unary)
+        return np.array(chain)
 
     else:
         chain_null: list = [None] + list(w) + [None] # if no binary needed, return as a np.ndarray
@@ -49,7 +49,7 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
     results_arr: np.ndarray
 
     if binary_code == 'y':
-        arr: np.ndarray = convert_to_array(w=w, unary_encoding=True) # if Fibonacci, needs to be encoded 
+        arr: np.ndarray = convert_to_array(w=w, binary_encoding=True) # if Fibonacci, needs to be encoded 
         if multiple_input_chains:
             results_arr = simulate_multiple_chains(position=0, instructions=instructions)
             #plot_results(results_arr)
@@ -122,17 +122,14 @@ def is_accepted(w: str, tape: np.ndarray, final_state: int, halt_state: int, exe
     '''
     prints if the chain was accepted or not by the Turing Machine 
     '''
+    acception: str = "rejected"
     chain_concatenated : str = ''.join([i if i is not None else '' for i in tape])
     if final_state == halt_state:
-        if execution_time >= 0:
-            print(f"\nInput chain '{w}' was accepted by the TM with result: {chain_concatenated}\ntime: {execution_time}")
-        else:
-            print(f"\nInput chain '{w}' was accepted by the TM with result: {chain_concatenated}")
-    else:   
-        if execution_time >= 0:
-            print(f"\nInput chain '{w}' was rejected by the TM with result: {chain_concatenated}\ntime: {execution_time}")
-        else:
-            print(f"\nInput chain '{w}' was rejected by the TM with result: {chain_concatenated}")
+        acception = "accepted"
+    print(f"\nInput chain '{w}' was {acception} by the TM with result: {chain_concatenated}\ntime: {execution_time}\nTape: {tape}")
+
+    
+
 
 def print_instant_production(state: int, tape: np.ndarray, position: int):
     '''
