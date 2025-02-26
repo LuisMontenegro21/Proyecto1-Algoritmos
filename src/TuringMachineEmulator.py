@@ -50,20 +50,14 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
 
     if binary_code == 'y':
         arr: np.ndarray = convert_to_array(w=w, binary_encoding=True) # if Fibonacci, needs to be encoded 
-        if multiple_input_chains:
-            results_arr = simulate_multiple_chains(position=0, instructions=instructions)
-            #plot_results(results_arr)
-        else:
-            traverse_tape(w=w, tape=arr, position=0, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
-
-        
     else:
         arr: np.ndarray = convert_to_array(w=w) 
-        if multiple_input_chains:
-            results_arr = simulate_multiple_chains(position=0, instructions=instructions)
-            #plot_results(results_arr)
-        else:
-            traverse_tape(w=w, tape=arr, position=0, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
+
+    if multiple_input_chains:
+        results_arr: np.ndarray = simulate_multiple_chains(position=0, instructions=instructions)
+        #plot_results(results_arr)
+    else:
+        traverse_tape(w=w, tape=arr, position=0, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
    
 
 def get_transition_map(instructions: dict) -> dict:
