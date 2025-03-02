@@ -22,63 +22,462 @@ tape_alphabet:
 - '0'
 - '1'
 - '#'
-- '|'
+- 'A'
+- 'C'
 - 
 # instructions for transitions
 delta:
-
-# Q0
-# q0 q0 0 0 R
-- params:
-    initial_state: '0'
-    mem_cache_value: 
-    tape_input: '1'
-
-  output:
-    final_state: '0'
-    mem_cache_value:
-    tape_output: '1'
-    tape_displacement: 'R'
-
-- params:
-    initial_state: '0'
-    mem_cache_value: 
-    tape_input: '0'
-
-  output:
-    final_state: '0'
-    mem_cache_value:
-    tape_output: '0'
-    tape_displacement: 'R'
-
-- params:
-    initial_state: '0'
-    mem_cache_value: 
-    tape_input: '#'
-
-  output:
-    final_state: '0'
-    mem_cache_value:
-    tape_output: '#'
-    tape_displacement: 'R'
-
+# q0 B B q0 R
 - params:
     initial_state: '0'
     mem_cache_value: 
     tape_input: 
 
   output:
-    final_state: 'f'
+    final_state: '0'
+    mem_cache_value:
+    tape_output: 
+    tape_displacement: 'R'
+
+# q0 1 1 q1 R
+- params:
+    initial_state: '0'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'R'
+
+# q0 0 0 q1 R
+- params:
+    initial_state: '0'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: '0'
+    tape_displacement: 'R'
+
+# q1 B B q2 R
+- params:
+    initial_state: '1'
+    mem_cache_value: 
+    tape_input: 
+
+  output:
+    final_state: '2'
+    mem_cache_value:
+    tape_output: 
+    tape_displacement: 'R'
+
+# q1 0 0 q1 R
+- params:
+    initial_state: '1'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: '0'
+    tape_displacement: 'R'
+
+# q1 1 1 q1 R
+- params:
+    initial_state: '1'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'R'
+
+# q1 A A q1 R
+- params:
+    initial_state: '1'
+    mem_cache_value: 
+    tape_input: 'A'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: 'A'
+    tape_displacement: 'R'
+
+# q1 C C q1 R
+- params:
+    initial_state: '1'
+    mem_cache_value: 
+    tape_input: 'C'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: 'C'
+    tape_displacement: 'R'
+
+# q2 B B q3 L
+- params:
+    initial_state: '2'
+    mem_cache_value: 
+    tape_input: 
+
+  output:
+    final_state: '3'
+    mem_cache_value:
+    tape_output: 
+    tape_displacement: 'L'
+
+# q2 0 0 q2 R
+- params:
+    initial_state: '2'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '2'
+    mem_cache_value:
+    tape_output: '0'
+    tape_displacement: 'R'
+
+# q2 1 1 q2 R
+- params:
+    initial_state: '2'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '2'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'R'
+
+
+# q3 B B q9 L
+- params:
+    initial_state: '3'
+    mem_cache_value: 
+    tape_input: 
+
+  output:
+    final_state: '9'
+    mem_cache_value:
+    tape_output: 
+    tape_displacement: 'L'
+
+# q3 0 B q4 L
+- params:
+    initial_state: '3'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '4'
+    mem_cache_value:
+    tape_output: 
+    tape_displacement: 'L'
+
+# q3 1 B q6 L
+- params:
+    initial_state: '3'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '6'
+    mem_cache_value:
+    tape_output: 
+    tape_displacement: 'L'
+
+# q4 B B q5 L
+- params:
+    initial_state: '4'
+    mem_cache_value: 
+    tape_input: 
+
+  output:
+    final_state: '5'
+    mem_cache_value:
+    tape_output: 
+    tape_displacement: 'L'
+# q4 0 0 q4 L
+- params:
+    initial_state: '4'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '4'
+    mem_cache_value:
+    tape_output: '0'
+    tape_displacement: 'L'
+
+# q4 1 1 q4 L
+- params:
+    initial_state: '4'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '4'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'L'
+
+# q5 0 A q1 R
+- params:
+    initial_state: '5'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: 'A'
+    tape_displacement: 'R'
+
+# q5 1 C q1 R
+- params:
+    initial_state: '5'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: 'C'
+    tape_displacement: 'R'
+
+# q5 A A q5 L
+- params:
+    initial_state: '5'
+    mem_cache_value: 
+    tape_input: 'A'
+
+  output:
+    final_state: '5'
+    mem_cache_value:
+    tape_output: 'A'
+    tape_displacement: 'L'
+
+# q5 C C q5 L
+- params:
+    initial_state: '5'
+    mem_cache_value: 
+    tape_input: 'C'
+
+  output:
+    final_state: '5'
+    mem_cache_value:
+    tape_output: 'C'
+    tape_displacement: 'L'
+
+# q6 B B q7 L
+- params:
+    initial_state: '6'
+    mem_cache_value: 
+    tape_input: 
+
+  output:
+    final_state: '7'
+    mem_cache_value:
+    tape_output: 
+    tape_displacement: 'L'
+
+# q6 0 0 q6 L
+- params:
+    initial_state: '6'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '6'
+    mem_cache_value:
+    tape_output: '0'
+    tape_displacement: 'L'
+
+# q6 1 1 q6 L
+- params:
+    initial_state: '6'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '6'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'L'
+
+# q6 1 1 q6 L
+- params:
+    initial_state: '6'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '6'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'L'
+
+# q7 0 C q1 R
+- params:
+    initial_state: '7'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: 'C'
+    tape_displacement: 'R'
+
+
+# q7 1 A q1 L
+- params:
+    initial_state: '7'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '8'
+    mem_cache_value:
+    tape_output: 'A'
+    tape_displacement: 'L'
+
+# q7 A A q7 L
+- params:
+    initial_state: '7'
+    mem_cache_value: 
+    tape_input: 'A'
+
+  output:
+    final_state: '7'
+    mem_cache_value:
+    tape_output: 'A'
+    tape_displacement: 'L'
+
+# q7 C C q7 L
+- params:
+    initial_state: '7'
+    mem_cache_value: 
+    tape_input: 'C'
+
+  output:
+    final_state: '7'
+    mem_cache_value:
+    tape_output: 'C'
+    tape_displacement: 'L'
+
+# q8 B 1 q1 R
+- params:
+    initial_state: '8'
+    mem_cache_value: 
+    tape_input: 
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'R'
+  
+# q8 0 1 q1 R
+- params:
+    initial_state: '8'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '1'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'R'
+
+# q8 1 0 q8 L
+- params:
+    initial_state: '8'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '8'
+    mem_cache_value:
+    tape_output: '0'
+    tape_displacement: 'L'
+
+# q9 B B q10 S
+- params:
+    initial_state: '9'
+    mem_cache_value: 
+    tape_input: 
+
+  output:
+    final_state: '10'
     mem_cache_value:
     tape_output: 
     tape_displacement: 'S'
+
+# q9 0 0 q10 R
+- params:
+    initial_state: '9'
+    mem_cache_value: 
+    tape_input: '0'
+
+  output:
+    final_state: '10'
+    mem_cache_value:
+    tape_output: '0'
+    tape_displacement: 'S'
+
+# q9 0 0 q10 R
+- params:
+    initial_state: '9'
+    mem_cache_value: 
+    tape_input: '1'
+
+  output:
+    final_state: '10'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'S'
+
+# q9 A 0 q9 L
+- params:
+    initial_state: '9'
+    mem_cache_value: 
+    tape_input: 'A'
+
+  output:
+    final_state: '9'
+    mem_cache_value:
+    tape_output: '0'
+    tape_displacement: 'L'
+
+# q9 C 1 q9 L
+- params:
+    initial_state: '9'
+    mem_cache_value: 
+    tape_input: 'C'
+
+  output:
+    final_state: '9'
+    mem_cache_value:
+    tape_output: '1'
+    tape_displacement: 'L'
 
 
 # ...
 # add for next instructions, each for an state 
 
 # to check binary codification: y / n
-binary_cod:
+cod:
   binary : 'y'
 
 

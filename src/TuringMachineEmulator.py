@@ -1,6 +1,6 @@
 import yaml
-import numpy as np
 import time
+from collections import deque
 from plotting import plot_results
 
 def read_yaml(file_path: str):
@@ -15,7 +15,7 @@ def read_yaml(file_path: str):
         except yaml.YAMLError as exception:
             raise exception
         
-def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool = False) -> np.ndarray:
+def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool = False) -> deque:
     '''
     converts the chain to list and returns it as np.ndarray.
     optionally codifies the input chain to binary
@@ -27,34 +27,35 @@ def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool =
         w: int = int(w)
         binary: int = format(w, 'b') # transform to binary str
         print(f"Binary: {binary}\n")
-        chain_null : list = list(binary) + [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None] # add null to both ends
-        return np.array(chain_null) # return a np.ndarray of the binary
+        chain_null : list = list(binary) # add null to both ends
+        return deque(chain_null) # return a list of the binary      
     
     elif unary_encoding and w.isdigit():
         w: int = int(w)
-        unary: list = ['|' for _ in range(w)] # fill array with |
-        chain: list = ['1', '#', '1'] + unary # add starting case 
-        return np.array(chain)
+        unary: list = ['1' for _ in range(w)] # fill array with |
+        chain: list = [None] + unary + [None]
+
+        return deque(chain)
 
     else:
         chain_null: list = [None] + list(w) + [None] # if no binary needed, return as a np.ndarray
-        return np.array(chain_null)
+        return deque(chain_null)
   
 def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False) -> None:
     '''
     Selects which yaml to use and checks if it needs a binary codification or not
     '''
     instructions: dict = read_yaml(file_path=file_path) 
-    binary_code: str = instructions.get('binary_cod', {}).get('binary', 'n') # check if has binary code, else, do not pass to binary
-    results_arr: np.ndarray
+    binary_code: str = instructions.get('cod', {}).get('binary', 'n') # check if has binary code, else, do not pass to binary
+    results_arr: list
 
     if binary_code == 'y':
-        arr: np.ndarray = convert_to_array(w=w, binary_encoding=True) # if Fibonacci, needs to be encoded 
+        arr: deque = convert_to_array(w=w, unary_encoding=True) # if Fibonacci, needs to be encoded 
     else:
-        arr: np.ndarray = convert_to_array(w=w) 
+        arr: deque = convert_to_array(w=w) 
 
     if multiple_input_chains:
-        results_arr: np.ndarray = simulate_multiple_chains(position=0, instructions=instructions)
+        results_arr: list = simulate_multiple_chains(position=0, instructions=instructions)
         #plot_results(results_arr)
     else:
         traverse_tape(w=w, tape=arr, position=0, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
@@ -73,7 +74,7 @@ def get_transition_map(instructions: dict) -> dict:
     }
     return transition_map
 
-def traverse_tape(w: str, tape: np.ndarray, position: int, instructions: dict, delta_dict:dict, avoid_printing:bool=False) -> float:
+def traverse_tape(w: str, tape: deque, position: int, instructions: dict, delta_dict:dict, avoid_printing:bool=False) -> float:
     halt_state = instructions['q_states']['final'] # get the final state
     initial_time: float = set_time()
     final_tape, final_tape_state = iterate(transition_map=delta_dict, tape=tape, initial_poisition=position, initial_state=instructions['q_states']['initial'], avoid_printing=avoid_printing) 
@@ -83,25 +84,36 @@ def traverse_tape(w: str, tape: np.ndarray, position: int, instructions: dict, d
     return time_execution
 
 
-def iterate(transition_map: dict , tape: np.ndarray, initial_poisition: int, initial_state: int, avoid_printing: bool) -> tuple[np.ndarray, int]:
+def iterate(transition_map: dict , tape: deque, initial_poisition: int, initial_state: int, avoid_printing: bool) -> tuple[list, int]:
     position: int = initial_poisition # define initial position
     current_state: int = initial_state # define initial state
+
     while True:
-        current_symbol = tape[position] if position < len(tape) else None
-        transition = transition_map.get((current_state, current_symbol))
+        head_symbol = tape[0] if tape[0] is not None else None
+        transition = transition_map.get((current_state, head_symbol))
         if transition is None:
             break
         
         # update the tape
-        if transition['output']['tape_output'] is not None:
-            tape[position] = transition['output']['tape_output']
+        new_symbol = transition['output']['tape_output']
+        if new_symbol is not None:
+            tape[0] = new_symbol
 
+
+        move = transition['output']['tape_displacement']
         # move throughout the tape
-        if transition['output']['tape_displacement'] == 'R':
+        if  move == 'R':
+            if len(tape) == 1:
+                tape.append(None)
+            tape.rotate(-1)
             position += 1
-        elif transition['output']['tape_displacement'] == 'L':
+        elif move == 'L':
+            if len(tape) == 1:
+                tape.append(None)
+            else:
+                tape.rotate(1)
             position -= 1
-        elif transition['output']['tape_displacement'] == 'S':
+        elif move == 'S':
             pass # position = position
 
         current_state = transition['output']['final_state']
@@ -109,10 +121,11 @@ def iterate(transition_map: dict , tape: np.ndarray, initial_poisition: int, ini
         if not avoid_printing:
             print_instant_production(state=current_state, tape=tape, position=position)
     
-    return tape, current_state
+    return list(tape), current_state
 
 
-def is_accepted(w: str, tape: np.ndarray, final_state: int, halt_state: int, execution_time:float=None):
+
+def is_accepted(w: str, tape: list, final_state: int, halt_state: int, execution_time:float=None):
     '''
     prints if the chain was accepted or not by the Turing Machine 
     '''
@@ -125,15 +138,21 @@ def is_accepted(w: str, tape: np.ndarray, final_state: int, halt_state: int, exe
     
 
 
-def print_instant_production(state: int, tape: np.ndarray, position: int):
+def print_instant_production(state: int, tape: deque, position: int):
     '''
     print instant productions 
     '''
-    tape: np.ndarray = np.array(['B' if symbol is None else symbol for symbol in tape], dtype=object) # replace None instances for Blank
-    tape[position] = f'[S_{state}, {tape[position]}]' # change the current position for the state and position it is
-    tape_content: str = ''.join(str(symbol) for symbol in tape) # join the symbols found in the current array
-    print(f"\t{tape_content}") # print content currently in the tape
+    snapshot = list(tape)
 
+    # replace None with B for display 
+    snapshot = ['B' if sym is None else sym for sym in snapshot]
+
+    # append the state 
+    if 0 <= position < len(snapshot):
+        snapshot[position] = f"[Q{state},{snapshot[position]}]"
+
+    # Join and print
+    print("".join(str(symbol) for symbol in snapshot))
 
 def set_time() -> float:
     '''Sets time'''
@@ -144,16 +163,16 @@ def get_time(initial_time: float, final_time: float) -> float:
     return final_time - initial_time 
 
 
-def simulate_multiple_chains(position: int, instructions: dict) -> np.ndarray:
+def simulate_multiple_chains(position: int, instructions: dict) -> list:
     '''
     this function simulates many strings to later be passed for plotting with results being a 2D array with [<chain>, <time>] format.
     '''
     time_result: float = 0.0
-    time_exc_arr:np.ndarray = np.array([], dtype=object)
+    time_exc_arr: list = []
     simulation_strings: list = instructions.get('simulation_strings', [])
     delta_dict: dict = get_transition_map(instructions=instructions) # get delta instructions before hand 
     for string in simulation_strings:
-        tape: np.ndarray = convert_to_array(w=string, binary_encoding=True)
+        tape: list = convert_to_array(w=string, binary_encoding=True)
         time_result = traverse_tape(w=string, tape=tape, position=position, instructions=instructions, delta_dict=delta_dict, avoid_printing=True)
-        time_exc_arr = np.append(time_exc_arr, [string , time_result], axis=0) # odd numbers are time execution, even are the chain
+        time_exc_arr.append((string, time_result)) 
     return time_exc_arr
