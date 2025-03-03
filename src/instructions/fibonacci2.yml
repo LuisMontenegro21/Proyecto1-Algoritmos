@@ -1,3 +1,4 @@
+
 q_states:
   q_list:
   - '0'
@@ -18,17 +19,49 @@ q_states:
   - '16'
   - '17'
   - '18'
+  - '19'
+  - '20'
+  - '21'
+  - '22'
+  - '23'
+  - '24'
+  - '25'
+  - '26'
+  - '27'
+  - '28'
+  - '29'
+  - '30'
+  - '31'
+  - '32'
+  - '33'
+  - '34'
+  - '35'
+  - '36'
+  - '37'
+  - '38'
+  - '39'
+  - '40'
+  - '41'
+  - '42'
+  - '43'
+  - '44'
+  - '45'
+  - '46'
+  - '47'
+  - '48'
+  - '49'
   initial: '0'
-  final: '18'
+  final: '49'
 
+
+# gonna use 1 for easy sum for the result
 alphabet:
-- '0'
 - '1'
 #  is a marker and  is blank
 tape_alphabet:
-- '0'
+- 'x'
 - '1'
-- 'A'
+- '#'
 - 
 # instructions for transitions
 delta:
@@ -37,289 +70,730 @@ delta:
     tape_input: '1'
   output:
     final_state: '1'
-    tape_output: 
-    tape_displacement: 'R'
-- params:
-    initial_state: '0'
-    tape_input: 
-  output:
-    final_state: '18'
-    tape_output: '0'
-    tape_displacement: 'R'
+    tape_output: '#'
+    tape_displacement: R
 - params:
     initial_state: '1'
     tape_input: '1'
   output:
-    final_state: '2'
-    tape_output: 
-    tape_displacement: 'R'
+    final_state: '1'
+    tape_output: '1'
+    tape_displacement: R
 - params:
     initial_state: '1'
     tape_input: 
   output:
-    final_state: '18'
-    tape_output: '1'
-    tape_displacement: 'R'
-- params:
-    initial_state: '2'
-    tape_input: '1'
-  output:
     final_state: '2'
     tape_output: '1'
-    tape_displacement: 'R'
+    tape_displacement: R
 - params:
     initial_state: '2'
     tape_input: 
   output:
     final_state: '3'
-    tape_output: '0'
-    tape_displacement: 'R'
+    tape_output: x
+    tape_displacement: R
 - params:
     initial_state: '3'
     tape_input: 
   output:
     final_state: '4'
-    tape_output: 'A'
-    tape_displacement: 'R'
+    tape_output: '1'
+    tape_displacement: R
 - params:
     initial_state: '4'
     tape_input: 
   output:
-    final_state: '5'
-    tape_output: '0'
-    tape_displacement: 'R'
+    final_state: '32'
+    tape_output: x
+    tape_displacement: L
 - params:
     initial_state: '5'
     tape_input: 
   output:
-    final_state: '12'
-    tape_output: 'A'
-    tape_displacement: 'L'
-- params:
-    initial_state: '7'
-    tape_input: '1'
-  output:
-    final_state: '7'
-    tape_output: 'A'
-    tape_displacement: 'R'
-- params:
-    initial_state: '7'
-    tape_input: '0'
-  output:
-    final_state: '7'
-    tape_output: '0'
-    tape_displacement: 'R'
-- params:
-    initial_state: '7'
-    tape_input: 'A'
-  output:
-    final_state: '7'
-    tape_output: 'A'
-    tape_displacement: 'R'
-- params:
-    initial_state: '7'
-    tape_input: 
-  output:
-    final_state: '8'
-    tape_output: '0'
-    tape_displacement: 'L'
-- params:
-    initial_state: '8'
-    tape_input: '1'
-  output:
-    final_state: '8'
+    final_state: '6'
     tape_output: '1'
-    tape_displacement: 'L'
+    tape_displacement: L
+- params:
+    initial_state: '6'
+    tape_input: x
+  output:
+    final_state: '36'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '7'
+    tape_input: x
+  output:
+    final_state: '8'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '7'
+    tape_input: '1'
+  output:
+    final_state: '7'
+    tape_output: '1'
+    tape_displacement: L
 - params:
     initial_state: '8'
-    tape_input: '0'
+    tape_input: x
   output:
     final_state: '9'
-    tape_output: '0'
-    tape_displacement: 'L'
+    tape_output: x
+    tape_displacement: S
 - params:
     initial_state: '8'
-    tape_input: 'A'
+    tape_input: '1'
   output:
-    final_state: '10'
+    final_state: '8'
     tape_output: '1'
-    tape_displacement: 'R'
+    tape_displacement: L
+- params:
+    initial_state: '9'
+    tape_input: x
+  output:
+    final_state: '9'
+    tape_output: x
+    tape_displacement: R
 - params:
     initial_state: '9'
     tape_input: '1'
   output:
     final_state: '9'
     tape_output: '1'
-    tape_displacement: 'L'
+    tape_displacement: R
 - params:
     initial_state: '9'
-    tape_input: '0'
-  output:
-    final_state: '12'
-    tape_output: '0'
-    tape_displacement: 'L'
-- params:
-    initial_state: '9'
-    tape_input: 'A'
+    tape_input: 
   output:
     final_state: '10'
-    tape_output: '1'
-    tape_displacement: 'R'
+    tape_output: x
+    tape_displacement: S
+- params:
+    initial_state: '10'
+    tape_input: x
+  output:
+    final_state: '11'
+    tape_output: x
+    tape_displacement: L
 - params:
     initial_state: '10'
     tape_input: '1'
   output:
     final_state: '10'
     tape_output: '1'
-    tape_displacement: 'R'
+    tape_displacement: L
 - params:
-    initial_state: '10'
-    tape_input: '0'
+    initial_state: '11'
+    tape_input: x
   output:
-    final_state: '10'
-    tape_output: '0'
-    tape_displacement: 'R'
-- params:
-    initial_state: '10'
-    tape_input: 
-  output:
-    final_state: '11'
-    tape_output: '1'
-    tape_displacement: 'L'
+    final_state: '12'
+    tape_output: x
+    tape_displacement: R
 - params:
     initial_state: '11'
     tape_input: '1'
   output:
     final_state: '11'
     tape_output: '1'
-    tape_displacement: 'L'
+    tape_displacement: L
 - params:
     initial_state: '11'
-    tape_input: '0'
+    tape_input: 
   output:
-    final_state: '8'
-    tape_output: '0'
-    tape_displacement: 'L'
+    final_state: '12'
+    tape_output: 
+    tape_displacement: R
+- params:
+    initial_state: '12'
+    tape_input: x
+  output:
+    final_state: '14'
+    tape_output: x
+    tape_displacement: S
 - params:
     initial_state: '12'
     tape_input: '1'
-  output:
-    final_state: '12'
-    tape_output: '1'
-    tape_displacement: 'L'
-- params:
-    initial_state: '12'
-    tape_input: '0'
-  output:
-    final_state: '12'
-    tape_output: '0'
-    tape_displacement: 'L'
-- params:
-    initial_state: '12'
-    tape_input: A
-  output:
-    final_state: '12'
-    tape_output: A
-    tape_displacement: 'L'
-- params:
-    initial_state: '12'
-    tape_input: 
   output:
     final_state: '13'
     tape_output: 
-    tape_displacement: 'R'
+    tape_displacement: R
+- params:
+    initial_state: '13'
+    tape_input: x
+  output:
+    final_state: '13'
+    tape_output: x
+    tape_displacement: R
 - params:
     initial_state: '13'
     tape_input: '1'
   output:
-    final_state: '14'
-    tape_output: 
-    tape_displacement: 'R'
+    final_state: '13'
+    tape_output: '1'
+    tape_displacement: R
 - params:
     initial_state: '13'
-    tape_input: '0'
+    tape_input: 
   output:
-    final_state: '15'
+    final_state: '10'
     tape_output: '1'
-    tape_displacement: 'R'
+    tape_displacement: L
 - params:
     initial_state: '14'
-    tape_input: '1'
-  output:
-    final_state: '14'
-    tape_output: '1'
-    tape_displacement: 'R'
-- params:
-    initial_state: '14'
-    tape_input: '0'
-  output:
-    final_state: '7'
-    tape_output: '0'
-    tape_displacement: 'R'
-- params:
-    initial_state: '15'
-    tape_input: '1'
+    tape_input: x
   output:
     final_state: '15'
-    tape_output: 'A'
-    tape_displacement: 'R'
+    tape_output: x
+    tape_displacement: L
 - params:
     initial_state: '15'
-    tape_input: '0'
+    tape_input: x
   output:
-    final_state: '15'
-    tape_output: '0'
-    tape_displacement: 'R'
-- params:
-    initial_state: '15'
-    tape_input: 'A'
-  output:
-    final_state: '15'
-    tape_output: 'A'
-    tape_displacement: 'R'
+    final_state: '16'
+    tape_output: x
+    tape_displacement: L
 - params:
     initial_state: '15'
     tape_input: 
   output:
-    final_state: '16'
+    final_state: '15'
     tape_output: 
-    tape_displacement: 'L'
+    tape_displacement: L
 - params:
     initial_state: '16'
-    tape_input: '0'
+    tape_input: x
   output:
     final_state: '17'
-    tape_output: 
-    tape_displacement: 'L'
+    tape_output: x
+    tape_displacement: R
 - params:
     initial_state: '16'
-    tape_input: 'A'
+    tape_input: '1'
   output:
     final_state: '16'
     tape_output: '1'
-    tape_displacement: 'L'
+    tape_displacement: L
+- params:
+    initial_state: '16'
+    tape_input: 
+  output:
+    final_state: '17'
+    tape_output: 
+    tape_displacement: R
+- params:
+    initial_state: '17'
+    tape_input: x
+  output:
+    final_state: '21'
+    tape_output: 
+    tape_displacement: S
 - params:
     initial_state: '17'
     tape_input: '1'
   output:
     final_state: '18'
     tape_output: 
-    tape_displacement: 'R'
+    tape_displacement: R
 - params:
-    initial_state: '17'
-    tape_input: '0'
+    initial_state: '18'
+    tape_input: x
   output:
-    final_state: '17'
-    tape_output: 
-    tape_displacement: 'L'
+    final_state: '19'
+    tape_output: x
+    tape_displacement: R
 - params:
-    initial_state: '17'
-    tape_input: 'A'
+    initial_state: '18'
+    tape_input: '1'
   output:
-    final_state: '17'
+    final_state: '18'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '19'
+    tape_input: x
+  output:
+    final_state: '20'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '19'
+    tape_input: '1'
+  output:
+    final_state: '20'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '19'
+    tape_input: 
+  output:
+    final_state: '19'
     tape_output: 
-    tape_displacement: 'L'
+    tape_displacement: R
+- params:
+    initial_state: '20'
+    tape_input: 
+  output:
+    final_state: '15'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '21'
+    tape_input: '1'
+  output:
+    final_state: '22'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '21'
+    tape_input: 
+  output:
+    final_state: '21'
+    tape_output: 
+    tape_displacement: R
+- params:
+    initial_state: '22'
+    tape_input: 
+  output:
+    final_state: '23'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '23'
+    tape_input: x
+  output:
+    final_state: '24'
+    tape_output: x
+    tape_displacement: R
+- params:
+    initial_state: '23'
+    tape_input: 
+  output:
+    final_state: '23'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '24'
+    tape_input: x
+  output:
+    final_state: '29'
+    tape_output: x
+    tape_displacement: R
+- params:
+    initial_state: '24'
+    tape_input: '1'
+  output:
+    final_state: '24'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '25'
+    tape_input: x
+  output:
+    final_state: '26'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '25'
+    tape_input: '1'
+  output:
+    final_state: '25'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '26'
+    tape_input: x
+  output:
+    final_state: '27'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '26'
+    tape_input: '1'
+  output:
+    final_state: '26'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '27'
+    tape_input: x
+  output:
+    final_state: '27'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '27'
+    tape_input: '1'
+  output:
+    final_state: '28'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '28'
+    tape_input: x
+  output:
+    final_state: '28'
+    tape_output: x
+    tape_displacement: R
+- params:
+    initial_state: '28'
+    tape_input: '1'
+  output:
+    final_state: '28'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '28'
+    tape_input: 
+  output:
+    final_state: '10'
+    tape_output: x
+    tape_displacement: S
+- params:
+    initial_state: '28'
+    tape_input: '#'
+  output:
+    final_state: '40'
+    tape_output: '#'
+    tape_displacement: S
+- params:
+    initial_state: '29'
+    tape_input: x
+  output:
+    final_state: '30'
+    tape_output: '1'
+    tape_displacement: S
+- params:
+    initial_state: '29'
+    tape_input: '1'
+  output:
+    final_state: '29'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '30'
+    tape_input: '1'
+  output:
+    final_state: '30'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '30'
+    tape_input: 
+  output:
+    final_state: '31'
+    tape_output: 
+    tape_displacement: L
+- params:
+    initial_state: '31'
+    tape_input: '1'
+  output:
+    final_state: '25'
+    tape_output: 
+    tape_displacement: L
+- params:
+    initial_state: '32'
+    tape_input: x
+  output:
+    final_state: '33'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '32'
+    tape_input: '1'
+  output:
+    final_state: '32'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '33'
+    tape_input: '1'
+  output:
+    final_state: '34'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '34'
+    tape_input: '1'
+  output:
+    final_state: '35'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '34'
+    tape_input: '#'
+  output:
+    final_state: '40'
+    tape_output: '#'
+    tape_displacement: S
+- params:
+    initial_state: '35'
+    tape_input: x
+  output:
+    final_state: '35'
+    tape_output: x
+    tape_displacement: R
+- params:
+    initial_state: '35'
+    tape_input: '1'
+  output:
+    final_state: '35'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '35'
+    tape_input: 
+  output:
+    final_state: '5'
+    tape_output: 
+    tape_displacement: S
+- params:
+    initial_state: '36'
+    tape_input: x
+  output:
+    final_state: '37'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '36'
+    tape_input: '1'
+  output:
+    final_state: '36'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '37'
+    tape_input: x
+  output:
+    final_state: '37'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '37'
+    tape_input: '1'
+  output:
+    final_state: '38'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '38'
+    tape_input: '1'
+  output:
+    final_state: '39'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '38'
+    tape_input: '#'
+  output:
+    final_state: '40'
+    tape_output: '#'
+    tape_displacement: S
+- params:
+    initial_state: '39'
+    tape_input: x
+  output:
+    final_state: '39'
+    tape_output: x
+    tape_displacement: R
+- params:
+    initial_state: '39'
+    tape_input: '1'
+  output:
+    final_state: '39'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '39'
+    tape_input: 
+  output:
+    final_state: '7'
+    tape_output: 
+    tape_displacement: L
+- params:
+    initial_state: '40'
+    tape_input: x
+  output:
+    final_state: '40'
+    tape_output: x
+    tape_displacement: R
+- params:
+    initial_state: '40'
+    tape_input: '1'
+  output:
+    final_state: '40'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '40'
+    tape_input: 
+  output:
+    final_state: '41'
+    tape_output: 
+    tape_displacement: L
+- params:
+    initial_state: '40'
+    tape_input: '#'
+  output:
+    final_state: '40'
+    tape_output: '#'
+    tape_displacement: R
+- params:
+    initial_state: '41'
+    tape_input: x
+  output:
+    final_state: '47'
+    tape_output: 
+    tape_displacement: L
+- params:
+    initial_state: '41'
+    tape_input: '1'
+  output:
+    final_state: '47'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '42'
+    tape_input: x
+  output:
+    final_state: '42'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '42'
+    tape_input: '1'
+  output:
+    final_state: '42'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '42'
+    tape_input: '#'
+  output:
+    final_state: '43'
+    tape_output: '#'
+    tape_displacement: R
+- params:
+    initial_state: '43'
+    tape_input: x
+  output:
+    final_state: '43'
+    tape_output: x
+    tape_displacement: R
+- params:
+    initial_state: '43'
+    tape_input: '1'
+  output:
+    final_state: '44'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '43'
+    tape_input: 
+  output:
+    final_state: '48'
+    tape_output: 
+    tape_displacement: S
+- params:
+    initial_state: '44'
+    tape_input: x
+  output:
+    final_state: '44'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '44'
+    tape_input: '1'
+  output:
+    final_state: '45'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '44'
+    tape_input: '#'
+  output:
+    final_state: '45'
+    tape_output: x
+    tape_displacement: S
+- params:
+    initial_state: '45'
+    tape_input: x
+  output:
+    final_state: '46'
+    tape_output: '1'
+    tape_displacement: R
+- params:
+    initial_state: '46'
+    tape_input: x
+  output:
+    final_state: '43'
+    tape_output: x
+    tape_displacement: R
+- params:
+    initial_state: '47'
+    tape_input: x
+  output:
+    final_state: '42'
+    tape_output: x
+    tape_displacement: L
+- params:
+    initial_state: '47'
+    tape_input: '1'
+  output:
+    final_state: '47'
+    tape_output: '1'
+    tape_displacement: L
+- params:
+    initial_state: '48'
+    tape_input: x
+  output:
+    final_state: '48'
+    tape_output: 
+    tape_displacement: L
+- params:
+    initial_state: '48'
+    tape_input: '1'
+  output:
+    final_state: '49'
+    tape_output: '1'
+    tape_displacement: S
+- params:
+    initial_state: '48'
+    tape_input: 
+  output:
+    final_state: '48'
+    tape_output: 
+    tape_displacement: L
+
+
+
+
+
+
 
 
 cod:
   binary: 'y'
+
+simulation_strings:
+- '1'
+- '2'
+- '3'
+- '4'
+- '5'
+- '6'
+- '7'
+- '8'
+- '9'
+- '10'
+- '11'
+- '12'
+- '13'
+- '14'
+- '15'
+- '16'
+- '17'
+- '18'
+- '19'
+- '20'

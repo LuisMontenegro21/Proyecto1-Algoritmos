@@ -32,7 +32,7 @@ def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool =
     elif unary_encoding and w.isdigit():
         w: int = int(w)
         unary: list = ['1' for _ in range(w)] # fill array with 1
-        chain: list =  unary
+        chain: list =  [None] + unary + 20*[None]
 
         return chain
 
@@ -54,10 +54,11 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
         arr: list = convert_to_array(w=w) 
 
     if multiple_input_chains:
-        results_arr: list = simulate_multiple_chains(position=0, instructions=instructions)
-        #plot_results(results_arr)
+        results_arr: list = simulate_multiple_chains(position=1, instructions=instructions)
+        # for string, result in results_arr:
+        #     print(f"String: {string} with time: {result}\n")
     else:
-        traverse_tape(w=w, tape=arr, position=0, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
+        traverse_tape(w=w, tape=arr, position=1, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
    
 
 def get_transition_map(instructions: dict) -> dict:
@@ -79,40 +80,52 @@ def traverse_tape(w: str, tape: list, position: int, instructions: dict, delta_d
     final_tape, final_tape_state = iterate(transition_map=delta_dict, tape=tape, initial_poisition=position, initial_state=instructions['q_states']['initial'], avoid_printing=avoid_printing) 
     final_time: float = set_time()
     time_execution: float = get_time(initial_time=initial_time, final_time=final_time)
-    is_accepted(w=w, tape=final_tape, final_state=final_tape_state, halt_state=halt_state, execution_time=time_execution)
+    is_accepted(w=w, tape=final_tape, final_state=final_tape_state, halt_state=halt_state, execution_time=time_execution, unary_to_decimal=True)
     return time_execution
 
+
+def ensure_in_bounds(tape: list, position: int, blank_symbol=None, chunk_size: int = 10) -> tuple[list, int]:
+    """
+    If 'position' is out of range, extend the tape with chunk_size blanks on left or right.
+    Returns the (possibly new) tape and the (possibly updated) position.
+    """
+    if position < 0:
+        needed = abs(position)
+        # For efficiency, extend by at least 'chunk_size'
+        needed = max(needed, chunk_size)
+        # Prepend blanks
+        tape = [blank_symbol] * needed + tape
+        position += needed
+    elif position >= len(tape):
+        needed = position - len(tape) + 1
+        needed = max(needed, chunk_size)
+        # Append blanks
+        tape += [blank_symbol] * needed
+    return tape, position
 
 def iterate(transition_map: dict , tape: list, initial_poisition: int, initial_state: int, avoid_printing: bool) -> tuple[list, int]:
     position: int = initial_poisition # define initial position
     current_state: int = initial_state # define initial state
 
     while True:
-        # tape, position = ensure_in_bounds(tape=tape, position=position)
-        current_symbol = tape[position]
-
+        tape, position = ensure_in_bounds(tape, position, chunk_size=10)
+        current_symbol:str = tape[position]
         transition = transition_map.get((current_state, current_symbol))
         if transition is None:
             break
         
         # update the tape
         new_symbol = transition['output']['tape_output']
-        if new_symbol is not None:
-            tape[position] = new_symbol
+        tape[position] = new_symbol
 
 
         move = transition['output']['tape_displacement']
         # move throughout the tape
         if  move == 'R':
-            # if len(tape) == 1:
-            #     tape.append(None)
-            
             position += 1
         elif move == 'L':
-            # if len(tape) == 1:
-            #     tape.append(None)
             position -= 1
-        elif move == 'S':
+        elif move == 'S' or move == 'N':
             pass # position = position
 
         current_state = transition['output']['final_state']
@@ -122,31 +135,18 @@ def iterate(transition_map: dict , tape: list, initial_poisition: int, initial_s
     
     return tape, current_state
 
-def ensure_in_bounds(tape: list, position: int, blank_symbol=None) -> tuple[list, int]:
-    """
-    If 'position' is out of range, extend the tape with blanks on the left or right.
-    Returns the updated tape and the possibly shifted position.
-    """
-    if position < 0:
-        needed = abs(position)
 
-        tape = [blank_symbol] * needed + tape
-        position += needed
-    elif position >= len(tape):
-        needed = position - len(tape) + 1
-       
-        tape += [blank_symbol] * needed
-    return tape, position
-
-def is_accepted(w: str, tape: list, final_state: int, halt_state: int, execution_time:float=None):
+def is_accepted(w: str, tape: list, final_state: int, halt_state: int, execution_time:float=None, unary_to_decimal:bool=False):
     '''
     prints if the chain was accepted or not by the Turing Machine 
     '''
     acception: str = "rejected"
     chain_concatenated : str = ''.join([i if i is not None else '' for i in tape])
+    if unary_to_decimal:
+        chain_concatenated = sum([int(i) for i in chain_concatenated])
     if final_state == halt_state:
         acception = "accepted"
-    print(f"\nInput chain '{w}' was {acception} by the TM with result: {chain_concatenated}\ntime: {execution_time}\nTape: {tape}")
+    print(f"\nInput chain '{w}' was {acception} by the TM with result: {chain_concatenated}\ntime: {execution_time}")
 
     
 
@@ -185,7 +185,7 @@ def simulate_multiple_chains(position: int, instructions: dict) -> list:
     simulation_strings: list = instructions.get('simulation_strings', [])
     delta_dict: dict = get_transition_map(instructions=instructions) # get delta instructions before hand 
     for string in simulation_strings:
-        tape: list = convert_to_array(w=string, binary_encoding=True)
+        tape: list = convert_to_array(w=string, unary_encoding=True)
         time_result = traverse_tape(w=string, tape=tape, position=position, instructions=instructions, delta_dict=delta_dict, avoid_printing=True)
         time_exc_arr.append((string, time_result)) 
     return time_exc_arr
