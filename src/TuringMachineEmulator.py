@@ -55,8 +55,7 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
 
     if multiple_input_chains:
         results_arr: list = simulate_multiple_chains(position=1, instructions=instructions)
-        # for string, result in results_arr:
-        #     print(f"String: {string} with time: {result}\n")
+        plot_results(results=results_arr)
     else:
         traverse_tape(w=w, tape=arr, position=1, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
    
@@ -85,13 +84,9 @@ def traverse_tape(w: str, tape: list, position: int, instructions: dict, delta_d
 
 
 def ensure_in_bounds(tape: list, position: int, blank_symbol=None, chunk_size: int = 10) -> tuple[list, int]:
-    """
-    If 'position' is out of range, extend the tape with chunk_size blanks on left or right.
-    Returns the (possibly new) tape and the (possibly updated) position.
-    """
     if position < 0:
         needed = abs(position)
-        # For efficiency, extend by at least 'chunk_size'
+        # extender dependiendo el tamaño necesitado
         needed = max(needed, chunk_size)
         # Prepend blanks
         tape = [blank_symbol] * needed + tape
@@ -99,7 +94,7 @@ def ensure_in_bounds(tape: list, position: int, blank_symbol=None, chunk_size: i
     elif position >= len(tape):
         needed = position - len(tape) + 1
         needed = max(needed, chunk_size)
-        # Append blanks
+        # agregar blanks
         tape += [blank_symbol] * needed
     return tape, position
 

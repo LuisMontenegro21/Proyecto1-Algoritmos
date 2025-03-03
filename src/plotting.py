@@ -1,25 +1,32 @@
 from matplotlib import pyplot as plt
 import numpy as np
-import pandas as pd
-import seaborn as sns
 
-def plot_results(results: np.ndarray) -> None:
-    if len(results) % 2 != 0:
-        raise ValueError("Uneven number of indices in the array")
+def plot_results(results: list) -> None:
+    string_inputs = []
+    execution_times = []
+    for string, result in results:
+        string_inputs.append(string)
+        execution_times.append(result)
     
+    # turn str into int for graph
+    numeric_inputs = [int(s) for s in string_inputs]
     
-    string_inputs = results[0::2] # even indices hold the strings
-    if isinstance(string_inputs[0], str):
-        string_inputs = [len(str(s)) for s in string_inputs]
-    else:
-        string_inputs = np.array(string_inputs, dtype=np.float64)  # Ensure numeric format
-    execution_times = results[1::2] # odd indices hold the time execution
-    df = pd.DataFrame({'String' : string_inputs, 'Execution Time' : execution_times})
+    coefs = np.polyfit(numeric_inputs, execution_times, 2)
+    poly_d = np.poly1d(coefs)
+    
+    # print poly. regr.
+    print("Regresión polinomial: ")
+    print(poly_d)
 
-    plt.figure(figsize=(10,6))
-    sns.regplot(x="String", y="Execution Time", data=df, marker="o", line_kws={"color": "red"})
-    plt.xlabel("Input Chain")
-    plt.ylabel("Execution time")
-    plt.title("Turing Machine Execution Time vs Input Size")
+    x_range = np.linspace(min(numeric_inputs), max(numeric_inputs), 100)
+    y_fit = poly_d(x_range)
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(numeric_inputs, execution_times, marker='o', label="input")
+    plt.plot(x_range, y_fit, color="red", label="Polynomial Regression")
+    plt.xlabel("Input String")
+    plt.ylabel("Exc. Time")
+    plt.title("TM Fib vs Time Exc.")
     plt.grid(True)
+    plt.legend()
     plt.show()
