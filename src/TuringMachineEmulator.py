@@ -1,6 +1,5 @@
 import yaml
 import time
-from collections import deque
 from plotting import plot_results
 
 def read_yaml(file_path: str):
@@ -15,7 +14,7 @@ def read_yaml(file_path: str):
         except yaml.YAMLError as exception:
             raise exception
         
-def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool = False) -> deque:
+def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool = False) -> list:
     '''
     converts the chain to list and returns it as np.ndarray.
     optionally codifies the input chain to binary
@@ -28,18 +27,18 @@ def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool =
         binary: int = format(w, 'b') # transform to binary str
         print(f"Binary: {binary}\n")
         chain_null : list = list(binary) # add null to both ends
-        return deque(chain_null) # return a list of the binary      
+        return chain_null # return a list of the binary      
     
     elif unary_encoding and w.isdigit():
         w: int = int(w)
-        unary: list = ['1' for _ in range(w)] # fill array with |
-        chain: list = [None] + unary + [None]
+        unary: list = ['1' for _ in range(w)] # fill array with 1
+        chain: list =  unary
 
-        return deque(chain)
+        return chain
 
     else:
         chain_null: list = [None] + list(w) + [None] # if no binary needed, return as a np.ndarray
-        return deque(chain_null)
+        return chain_null
   
 def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False) -> None:
     '''
@@ -50,9 +49,9 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
     results_arr: list
 
     if binary_code == 'y':
-        arr: deque = convert_to_array(w=w, unary_encoding=True) # if Fibonacci, needs to be encoded 
+        arr: list = convert_to_array(w=w, unary_encoding=True) # if Fibonacci, needs to be encoded 
     else:
-        arr: deque = convert_to_array(w=w) 
+        arr: list = convert_to_array(w=w) 
 
     if multiple_input_chains:
         results_arr: list = simulate_multiple_chains(position=0, instructions=instructions)
@@ -74,7 +73,7 @@ def get_transition_map(instructions: dict) -> dict:
     }
     return transition_map
 
-def traverse_tape(w: str, tape: deque, position: int, instructions: dict, delta_dict:dict, avoid_printing:bool=False) -> float:
+def traverse_tape(w: str, tape: list, position: int, instructions: dict, delta_dict:dict, avoid_printing:bool=False) -> float:
     halt_state = instructions['q_states']['final'] # get the final state
     initial_time: float = set_time()
     final_tape, final_tape_state = iterate(transition_map=delta_dict, tape=tape, initial_poisition=position, initial_state=instructions['q_states']['initial'], avoid_printing=avoid_printing) 
@@ -84,34 +83,34 @@ def traverse_tape(w: str, tape: deque, position: int, instructions: dict, delta_
     return time_execution
 
 
-def iterate(transition_map: dict , tape: deque, initial_poisition: int, initial_state: int, avoid_printing: bool) -> tuple[list, int]:
+def iterate(transition_map: dict , tape: list, initial_poisition: int, initial_state: int, avoid_printing: bool) -> tuple[list, int]:
     position: int = initial_poisition # define initial position
     current_state: int = initial_state # define initial state
 
     while True:
-        head_symbol = tape[0] if tape[0] is not None else None
-        transition = transition_map.get((current_state, head_symbol))
+        # tape, position = ensure_in_bounds(tape=tape, position=position)
+        current_symbol = tape[position]
+
+        transition = transition_map.get((current_state, current_symbol))
         if transition is None:
             break
         
         # update the tape
         new_symbol = transition['output']['tape_output']
         if new_symbol is not None:
-            tape[0] = new_symbol
+            tape[position] = new_symbol
 
 
         move = transition['output']['tape_displacement']
         # move throughout the tape
         if  move == 'R':
-            if len(tape) == 1:
-                tape.append(None)
-            tape.rotate(-1)
+            # if len(tape) == 1:
+            #     tape.append(None)
+            
             position += 1
         elif move == 'L':
-            if len(tape) == 1:
-                tape.append(None)
-            else:
-                tape.rotate(1)
+            # if len(tape) == 1:
+            #     tape.append(None)
             position -= 1
         elif move == 'S':
             pass # position = position
@@ -121,9 +120,23 @@ def iterate(transition_map: dict , tape: deque, initial_poisition: int, initial_
         if not avoid_printing:
             print_instant_production(state=current_state, tape=tape, position=position)
     
-    return list(tape), current_state
+    return tape, current_state
 
+def ensure_in_bounds(tape: list, position: int, blank_symbol=None) -> tuple[list, int]:
+    """
+    If 'position' is out of range, extend the tape with blanks on the left or right.
+    Returns the updated tape and the possibly shifted position.
+    """
+    if position < 0:
+        needed = abs(position)
 
+        tape = [blank_symbol] * needed + tape
+        position += needed
+    elif position >= len(tape):
+        needed = position - len(tape) + 1
+       
+        tape += [blank_symbol] * needed
+    return tape, position
 
 def is_accepted(w: str, tape: list, final_state: int, halt_state: int, execution_time:float=None):
     '''
@@ -138,11 +151,11 @@ def is_accepted(w: str, tape: list, final_state: int, halt_state: int, execution
     
 
 
-def print_instant_production(state: int, tape: deque, position: int):
+def print_instant_production(state: int, tape: list, position: int):
     '''
     print instant productions 
     '''
-    snapshot = list(tape)
+    snapshot: list = tape[:]
 
     # replace None with B for display 
     snapshot = ['B' if sym is None else sym for sym in snapshot]
