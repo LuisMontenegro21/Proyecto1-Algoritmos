@@ -4,7 +4,7 @@ Turing machine emulator for a Fibonacci algorithm
 ## How to use
 Run using the following command under the src folder
 ```bash
-python main.py yaml_instructions/fibonacci.yml
+python main.py instructipons/fibonacci2.yml
 ```
 Also this was 
 
