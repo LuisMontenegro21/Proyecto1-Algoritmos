@@ -47,6 +47,7 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
     instructions: dict = read_yaml(file_path=file_path) 
     binary_code: str = instructions.get('cod', {}).get('binary', 'n') # check if has binary code, else, do not pass to binary
     results_arr: list
+    unary_to_decimal: bool = True if binary_code == 'y' else False
 
     if binary_code == 'y':
         arr: list = convert_to_array(w=w, unary_encoding=True) # if Fibonacci, needs to be encoded 
@@ -57,7 +58,7 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
         results_arr: list = simulate_multiple_chains(position=1, instructions=instructions)
         plot_results(results=results_arr)
     else:
-        traverse_tape(w=w, tape=arr, position=1, instructions=instructions, delta_dict=get_transition_map(instructions=instructions))
+        traverse_tape(w=w, tape=arr, position=1, instructions=instructions, delta_dict=get_transition_map(instructions=instructions), unary_to_decimal=unary_to_decimal)
    
 
 def get_transition_map(instructions: dict) -> dict:
@@ -73,13 +74,13 @@ def get_transition_map(instructions: dict) -> dict:
     }
     return transition_map
 
-def traverse_tape(w: str, tape: list, position: int, instructions: dict, delta_dict:dict, avoid_printing:bool=False) -> float:
+def traverse_tape(w: str, tape: list, position: int, instructions: dict, delta_dict:dict, avoid_printing:bool=False, unary_to_decimal:bool=False) -> float:
     halt_state = instructions['q_states']['final'] # get the final state
     initial_time: float = set_time()
     final_tape, final_tape_state = iterate(transition_map=delta_dict, tape=tape, initial_poisition=position, initial_state=instructions['q_states']['initial'], avoid_printing=avoid_printing) 
     final_time: float = set_time()
     time_execution: float = get_time(initial_time=initial_time, final_time=final_time)
-    is_accepted(w=w, tape=final_tape, final_state=final_tape_state, halt_state=halt_state, execution_time=time_execution, unary_to_decimal=True)
+    is_accepted(w=w, tape=final_tape, final_state=final_tape_state, halt_state=halt_state, execution_time=time_execution, unary_to_decimal=unary_to_decimal)
     return time_execution
 
 
