@@ -11,7 +11,7 @@ def plot_results(results: list) -> None:
     # turn str into int for graph
     numeric_inputs = [int(s) for s in string_inputs]
     
-    coefs = np.polyfit(numeric_inputs, execution_times, 2)
+    coefs = np.polyfit(numeric_inputs, execution_times, 6)
     poly_d = np.poly1d(coefs)
     
     # print poly. regr.
