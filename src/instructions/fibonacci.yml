@@ -476,7 +476,7 @@ delta:
 # ...
 # add for next instructions, each for an state 
 
-# to check binary codification: y / n
+# to check binary codification
 cod:
   binary : 'y'
 

@@ -37,7 +37,7 @@ def convert_to_array(w: str, binary_encoding: bool=False, unary_encoding: bool =
         return chain
 
     else:
-        chain_null: list = [None] + list(w) + [None] # if no binary needed, return as a np.ndarray
+        chain_null: list = [None] + list(w) + [None] # if no binary needed
         return chain_null
   
 def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False) -> None:
@@ -56,7 +56,8 @@ def select_turing_yaml(file_path: str, w: str, multiple_input_chains: bool=False
 
     if multiple_input_chains:
         results_arr: list = simulate_multiple_chains(position=1, instructions=instructions)
-        plot_results(results=results_arr)
+        if binary_code == 'y':
+            plot_results(results=results_arr)
     else:
         traverse_tape(w=w, tape=arr, position=1, instructions=instructions, delta_dict=get_transition_map(instructions=instructions), unary_to_decimal=unary_to_decimal)
    
